@@ -40,10 +40,13 @@ public class CmdDownload implements Command {
         List<ClientMeta> sources = context.getFileSources(fileId);
 
         for (ClientMeta client : sources) {
-            String host = client.ip[0] + "." + client.ip[1] + "." + client.ip[2] + "." + client.ip[3];
+            String host = Byte.toUnsignedInt(client.ip[0]) + "." + Byte.toUnsignedInt(client.ip[1]) + "." + Byte.toUnsignedInt(client.ip[2]) + "." +
+                    Byte.toUnsignedInt(client.ip[3]);
+
             if (host.equals("127.0.0.1") && client.port == context.myServerPort) {
                 continue;
             }
+
             System.out.println("downloading from " + host + ":" + client.port + " ...");
             Socket socket = new Socket(host, client.port);
             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
@@ -65,6 +68,8 @@ public class CmdDownload implements Command {
                     fileMeta.addBlock(new BlockMeta(partId, responseGet.contentSize, responseGet.content));
                 }
             }
+
+            context.catalog.addFile(fileMeta);
         }
 
         System.out.println("File " + fileMeta.name + " whith id=" + fileMeta.id + " have been downloaded!");
