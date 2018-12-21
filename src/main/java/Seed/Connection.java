@@ -46,6 +46,8 @@ public class Connection implements Runnable {
                         response = new ServerResponseStat(fileMeta.getNumBlocks(), fileMeta.getBlockIds());
                     }
                     response.writeToDataOutputStream(dataOutputStream);
+                    System.err.println(socket.getRemoteSocketAddress().toString() + " responsed myserver <stat> parts=" + response.parts.toString());
+
                     break;
                 }
 
@@ -66,6 +68,8 @@ public class Connection implements Runnable {
                     }
 
                     response.writeToDataOutputStream(dataOutputStream);
+                    System.err.println(socket.getRemoteSocketAddress().toString() + " responsed myserver <get> " );
+
                     break;
                 }
                 default:

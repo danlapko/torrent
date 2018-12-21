@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class ServerResponseStat extends ServerResponse {
     final int count;
-    final int[] parts;
+    public final int[] parts;
 
     public ServerResponseStat(int count, int[] parts) {
 
