@@ -34,7 +34,10 @@ public class Connection implements Runnable {
             switch (type) {
 
                 case 1: { // stat
+
                     ServerRequestStat request = new ServerRequestStat(dataInputStream);
+                    System.err.println(socket.getRemoteSocketAddress().toString() + " requested myserver <stat> fileId=" + request.id);
+
                     FileMeta fileMeta = globalContext.catalog.getFile(request.id);
                     ServerResponseStat response;
                     if (fileMeta == null) {
@@ -48,6 +51,8 @@ public class Connection implements Runnable {
 
                 case 2: { // get
                     ServerRequestGet request = new ServerRequestGet(dataInputStream);
+                    System.err.println(socket.getRemoteSocketAddress().toString() + " requested myserver <get> fileId=" + request.id + " blockId=" + request.part);
+
                     ServerResponseGet response;
                     FileMeta file = globalContext.catalog.getFile(request.id);
                     BlockMeta block = null;

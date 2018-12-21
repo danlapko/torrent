@@ -1,16 +1,13 @@
 package Seed;
 
 
+import Seed.Commands.*;
+import Seed.Exceptions.ConnectionBrokenException;
+import io.airlift.airline.ParseException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import Seed.Commands.*;
-import Seed.Exceptions.ConnectionBrokenException;
-import Seed.Model.Catalog;
-import io.airlift.airline.ParseException;
 
 // list files from tracker `list_tracker`
 // list files seeding by me `list_seeding`
@@ -28,7 +25,7 @@ public class Cli {
 //        int sentUpdateEvery = 4 * 60 * 1000; // ms
         int sentUpdateEvery = 9 * 1000; // ms
         int blockSize = 10 * 1024 * 1024; // 10M
-        String catalogURI = "./catalog.txt";
+        String catalogURI = "./catalogSeed.txt";
 
 
         @SuppressWarnings("unchecked")
@@ -46,9 +43,8 @@ public class Cli {
         io.airlift.airline.Cli<Command> parser = builder.build();
 
         // initialize global context
-        Path catalogSerializationPath = Paths.get(catalogURI);
-        Catalog catalog = new Catalog(blockSize, catalogSerializationPath);
-        GlobalContext globalContext = new GlobalContext(trackerHost, trackerPort, catalog, myServerPort, blockSize);
+
+        GlobalContext globalContext = new GlobalContext(trackerHost, trackerPort, catalogURI, myServerPort, blockSize);
 
         // start updater
         Thread updaterThread = new Thread(() -> {

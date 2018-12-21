@@ -39,7 +39,9 @@ public class TaskUpdate implements Runnable {
 
         context.lastUpdate = System.currentTimeMillis();
 
-        System.err.println(context.socket.getRemoteSocketAddress() + " execute  <update" + request.requestNum + ">");
+        System.err.println(context.socket.getRemoteSocketAddress() + " execute  <update "
+                + context.ip[0] + "." + context.ip[1] + "." + context.ip[2] + "." + context.ip[3]
+                + ":" + request.port + " " + request.requestNum + ">");
 
         Response response = new ResponseUpdate(request.requestNum, true);
         synchronized (context.responseQueue) {

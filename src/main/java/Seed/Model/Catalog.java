@@ -3,6 +3,7 @@ package Seed.Model;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,9 +13,9 @@ public class Catalog {
     final ConcurrentHashMap<Integer, FileMeta> idFileMap;
     final Path serializationPath;
 
-    public Catalog(int blockSize, Path serializationPath) throws IOException, ClassNotFoundException {
+    public Catalog(int blockSize, String catalogURI) throws IOException, ClassNotFoundException {
         this.blockSize = blockSize;
-        this.serializationPath = serializationPath;
+        this.serializationPath = Paths.get(catalogURI);
         if (!Files.exists(serializationPath)) {
             Files.createFile(serializationPath);
             idFileMap = new ConcurrentHashMap<>();

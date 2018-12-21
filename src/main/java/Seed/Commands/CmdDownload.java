@@ -41,7 +41,10 @@ public class CmdDownload implements Command {
 
         for (ClientMeta client : sources) {
             String host = client.ip[0] + "." + client.ip[1] + "." + client.ip[2] + "." + client.ip[3];
-            System.out.println(host);
+            if (host.equals("127.0.0.1") && client.port == context.myServerPort) {
+                continue;
+            }
+            System.out.println("downloading from " + host + ":" + client.port + " ...");
             Socket socket = new Socket(host, client.port);
             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
@@ -50,8 +53,12 @@ public class CmdDownload implements Command {
             requestStat.writeToDataOutputStream(dataOutputStream);
             ClientResponseStat responseStat = new ClientResponseStat(dataInputStream);
 
+            long numBlocks = (fileMeta.size + context.blockSize - 1) / context.blockSize;
+
             for (int partId : responseStat.parts) {
                 if (fileMeta.getBlock(partId) == null) {
+                    System.out.println("\tblock " + partId + "/" + numBlocks);
+
                     ClientRequestGet requestGet = new ClientRequestGet(fileId, partId);
                     requestGet.writeToDataOutputStream(dataOutputStream);
                     ClientResponseGet responseGet = new ClientResponseGet(dataInputStream);
@@ -60,7 +67,7 @@ public class CmdDownload implements Command {
             }
         }
 
-        System.err.println("File " + fileMeta.name + " whith id=" + fileMeta.id + " have been downloaded!");
+        System.out.println("File " + fileMeta.name + " whith id=" + fileMeta.id + " have been downloaded!");
 
 
         return 0;

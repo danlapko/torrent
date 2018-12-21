@@ -16,6 +16,7 @@ public class ClientRequestStat extends ClientRequest {
 
     @Override
     public void writeToDataOutputStream(DataOutputStream dataOutputStream) throws IOException {
+        dataOutputStream.writeByte(1);
         dataOutputStream.writeInt(id);
     }
 }

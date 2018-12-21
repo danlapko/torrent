@@ -45,10 +45,9 @@ public class SessionContext {
 
     boolean connectionClosed() throws IOException {
         if (socket.isClosed() || (System.currentTimeMillis() - lastUpdate > expirationTime)) {
-            if(socket.isClosed()) {
+            if (socket.isClosed()) {
                 System.err.println(socket.getRemoteSocketAddress() + " socket closed");
-            }
-            else{
+            } else {
                 System.err.println(socket.getRemoteSocketAddress() + " expired");
             }
             closeConnection();
@@ -59,11 +58,12 @@ public class SessionContext {
 
     private void closeConnection() throws IOException {
         if (!socket.isClosed()) {
-            System.err.println("Connection dead: " + socket.getRemoteSocketAddress().toString());
+            catalog.storeCatalog();
             socket.close();
+            System.err.println("Connection dead: " + socket.getRemoteSocketAddress().toString());
         }
         lockClientMeta.lock();
-        if(clientMeta!=null)
+        if (clientMeta != null)
             clientMeta.removeMe();
         lockClientMeta.unlock();
     }

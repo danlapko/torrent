@@ -23,7 +23,7 @@ public class ResponseSources extends Response {
     public void writeToDataOutputStream(DataOutputStream dataOutputStream) throws IOException {
         dataOutputStream.writeInt(size);
         for (ClientMeta client : clients) {
-            dataOutputStream.writeBytes(Arrays.toString(client.ip));
+            dataOutputStream.write(client.ip);
             dataOutputStream.writeShort(client.port);
         }
     }

@@ -1,11 +1,12 @@
 package Tracker.Model;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ClientMeta {
+public class ClientMeta implements Serializable {
     public final byte[] ip;
     public final short port;
 

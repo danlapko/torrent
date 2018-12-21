@@ -1,10 +1,11 @@
 package Tracker.Model;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class FileMeta {
+public class FileMeta implements Serializable {
     public final int id;
     public final String name;
     public final long size;

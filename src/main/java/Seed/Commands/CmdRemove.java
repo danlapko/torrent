@@ -12,7 +12,7 @@ public class CmdRemove implements Command {
     @Override
     public int execute(GlobalContext context) {
         context.catalog.removeFile(fileId);
-        System.err.println("File with id=" + fileId + " have been removed!");
+        System.out.println("File with id=" + fileId + " have been removed!");
 
         return 0;
     }

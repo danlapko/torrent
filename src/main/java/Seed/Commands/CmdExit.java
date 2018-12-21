@@ -7,7 +7,7 @@ public class CmdExit implements Command {
 
     @Override
     public int execute(GlobalContext context) throws Exception {
-        System.err.println("storing ...");
+        System.out.println("storing catalog...");
 
         return 0;
     }

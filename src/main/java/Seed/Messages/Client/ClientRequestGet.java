@@ -16,6 +16,7 @@ public class ClientRequestGet extends ClientRequest {
 
     @Override
     public void writeToDataOutputStream(DataOutputStream dataOutputStream) throws IOException {
+        dataOutputStream.writeByte(2);
         dataOutputStream.writeInt(id);
         dataOutputStream.writeInt(part);
     }

@@ -9,14 +9,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Tracker {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         int port = 8081;
         int numWorkers = 4;
 //        long expirationTime = 6 * 60 * 1000;
         long expirationTime =  10 * 1000;
+        String catalogURI = "./catalogTracker.txt";
 
-
-        Catalog catalog = new Catalog();
+        Catalog catalog = new Catalog(catalogURI);
 
         ServerSocket server = new ServerSocket(port);
         ExecutorService threadPool = Executors.newFixedThreadPool(numWorkers);

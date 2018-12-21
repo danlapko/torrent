@@ -27,7 +27,7 @@ public class CmdUpload implements Command {
         }
 
         context.catalog.addFile(fileMeta);
-        System.err.println("File " + fileMeta.name + " whith id=" + fileMeta.id + " have been uploaded!");
+        System.out.println("File " + fileMeta.name + " whith id=" + fileMeta.id + " have been uploaded!");
 
         return 0;
     }
