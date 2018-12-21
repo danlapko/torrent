@@ -30,50 +30,52 @@ public class Connection implements Runnable {
     @Override
     public void run() {
         try {
-            byte type = dataInputStream.readByte();
-            switch (type) {
+            while (true) {
+                byte type = dataInputStream.readByte();
+                switch (type) {
 
-                case 1: { // stat
+                    case 1: { // stat
 
-                    ServerRequestStat request = new ServerRequestStat(dataInputStream);
-                    System.err.println(socket.getRemoteSocketAddress().toString() + " requested myserver <stat> fileId=" + request.id);
+                        ServerRequestStat request = new ServerRequestStat(dataInputStream);
+                        System.err.println(socket.getRemoteSocketAddress().toString() + " requested myserver <stat> fileId=" + request.id);
 
-                    FileMeta fileMeta = globalContext.catalog.getFile(request.id);
-                    ServerResponseStat response;
-                    if (fileMeta == null) {
-                        response = new ServerResponseStat(0, new int[0]);
-                    } else {
-                        response = new ServerResponseStat(fileMeta.getNumBlocks(), fileMeta.getBlockIds());
+                        FileMeta fileMeta = globalContext.catalog.getFile(request.id);
+                        ServerResponseStat response;
+                        if (fileMeta == null) {
+                            response = new ServerResponseStat(0, new int[0]);
+                        } else {
+                            response = new ServerResponseStat(fileMeta.getNumBlocks(), fileMeta.getBlockIds());
+                        }
+                        response.writeToDataOutputStream(dataOutputStream);
+                        System.err.println(socket.getRemoteSocketAddress().toString() + " responsed myserver <stat> parts=" + response.parts.toString());
+
+                        break;
                     }
-                    response.writeToDataOutputStream(dataOutputStream);
-                    System.err.println(socket.getRemoteSocketAddress().toString() + " responsed myserver <stat> parts=" + response.parts.toString());
 
-                    break;
+                    case 2: { // get
+                        ServerRequestGet request = new ServerRequestGet(dataInputStream);
+                        System.err.println(socket.getRemoteSocketAddress().toString() + " requested myserver <get> fileId=" + request.id + " blockId=" + request.part);
+
+                        ServerResponseGet response;
+                        FileMeta file = globalContext.catalog.getFile(request.id);
+                        BlockMeta block = null;
+                        if (file != null) {
+                            block = file.getBlock(request.part);
+                        }
+                        if (block == null) {
+                            response = new ServerResponseGet(0, new byte[0]);
+                        } else {
+                            response = new ServerResponseGet(block.size, block.data);
+                        }
+
+                        response.writeToDataOutputStream(dataOutputStream);
+                        System.err.println(socket.getRemoteSocketAddress().toString() + " responsed myserver <get> ");
+
+                        break;
+                    }
+                    default:
+                        throw new RuntimeException(" invalid request type:" + type);
                 }
-
-                case 2: { // get
-                    ServerRequestGet request = new ServerRequestGet(dataInputStream);
-                    System.err.println(socket.getRemoteSocketAddress().toString() + " requested myserver <get> fileId=" + request.id + " blockId=" + request.part);
-
-                    ServerResponseGet response;
-                    FileMeta file = globalContext.catalog.getFile(request.id);
-                    BlockMeta block = null;
-                    if (file != null) {
-                        block = file.getBlock(request.part);
-                    }
-                    if (block == null) {
-                        response = new ServerResponseGet(0, new byte[0]);
-                    } else {
-                        response = new ServerResponseGet(block.size, block.data);
-                    }
-
-                    response.writeToDataOutputStream(dataOutputStream);
-                    System.err.println(socket.getRemoteSocketAddress().toString() + " responsed myserver <get> " );
-
-                    break;
-                }
-                default:
-                    throw new RuntimeException(" invalid request type:" + type);
             }
         } catch (IOException e) {
             e.printStackTrace();
