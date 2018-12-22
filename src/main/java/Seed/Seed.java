@@ -7,8 +7,10 @@ import Seed.Exceptions.SeedException;
 import io.airlift.airline.ParseException;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.NoSuchFileException;
 
 // list files from tracker `list_tracker`
 // list files seeding by me `list_seeding`
@@ -24,9 +26,10 @@ public class Seed {
         String trackerHost = "localhost";
         short trackerPort = 8081;
         short myServerPort = Short.valueOf(args[0]);
-//        int sentUpdateEvery = 4 * 60 * 1000; // ms
-        int sentUpdateEvery = 9 * 1000; // ms
+        int sentUpdateEvery = 4 * 60 * 1000; // ms
+//        int sentUpdateEvery = 9 * 1000; // ms
         int blockSize = 10 * 1024 * 1024; // 10M
+
         String catalogURI = "./seedCatalog_" + myServerPort + ".bin";
 
 
@@ -100,16 +103,16 @@ public class Seed {
                 cmd.execute(globalContext);
 
             } catch (SeedException e) {
-                System.err.println(e.getMessage());
-
+                System.err.println("WARNING:" + e.getMessage());
+            } catch (NoSuchFileException | FileNotFoundException e) {
+                System.err.println("WARNING: Invalid path! " + e.getMessage());
             } catch (ConnectionBrokenException e) {
                 System.err.println("FATAL: connection broken or expired! " + e.getMessage());
                 globalContext.finish();
                 e.printStackTrace();
                 return;
-
             } catch (IOException e) {
-                System.err.println("FATAL: Invalid path! " + e.getMessage());
+                System.err.println("FATAL: Unknown IO error! " + e.getMessage());
                 globalContext.finish();
                 e.printStackTrace();
                 return;
@@ -123,24 +126,6 @@ public class Seed {
         }
     }
 }
-
-// // =========== possible command content ============
-//        byte message = 1;
-//        dataOutputStream.writeByte(message);
-//
-//        System.err.println("Wrote: " + message);
-//
-//        int count = dataInputStream.readInt();
-//        System.err.print("Read: count=" + count);
-//        for (int i = 0; i < count; i++) {
-//            int id = dataInputStream.readInt();
-//            String name = dataInputStream.readUTF();
-//            long size = dataInputStream.readLong();
-//            System.err.print(" (" + id + ", " + name + " ," + size + ")");
-//        }
-//        System.err.println();
-//        Thread.sleep(2000);
-//        // =========== /possible command content ============
 
 
 

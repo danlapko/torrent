@@ -16,7 +16,7 @@ public class ClientResponseGet extends ClientResponse {
     public ClientResponseGet(DataInputStream dataInputStream) throws IOException {
         this.contentSize = dataInputStream.readLong();
         this.content = new byte[(int) contentSize];
-        dataInputStream.read(content);
+        dataInputStream.readFully(content);
     }
 
 }

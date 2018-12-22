@@ -19,7 +19,7 @@ public class ClientResponseSources extends ClientResponse {
         for (int i = 0; i < size; i++) {
 
             byte ip[] = new byte[4];
-            dataInputStream.read(ip);
+            dataInputStream.readFully(ip);
             short port = dataInputStream.readShort();
             ClientMeta clientMeta = new ClientMeta(ip, port);
             clients.add(i, clientMeta);

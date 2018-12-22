@@ -1,6 +1,8 @@
 plugins {
     id 'java'
 }
+apply plugin: 'application'
+applicationDefaultJvmArgs = ["-Xms256m", "-Xmx4096m"]
 
 group 'ifmo'
 version '1.0-SNAPSHOT'
@@ -9,6 +11,30 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+}
+
+task jarTracker(type: Jar) {
+    manifest {
+        attributes "Main-Class": "Tracker.Tracker"
+    }
+    baseName = "tracker"
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+}
+
+task jarSeed(type: Jar) {
+    manifest {
+        attributes "Main-Class": "Seed.Seed"
+    }
+    baseName = "seed"
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
 }
 
 dependencies {
