@@ -10,12 +10,12 @@ import java.io.IOException;
 
 public class ClientResponseGet extends ClientResponse {
 
-    public final int contentSize;
+    public final long contentSize;
     public final byte[] content;
 
     public ClientResponseGet(DataInputStream dataInputStream) throws IOException {
-        this.contentSize = dataInputStream.readInt();
-        this.content = new byte[contentSize];
+        this.contentSize = dataInputStream.readLong();
+        this.content = new byte[(int) contentSize];
         dataInputStream.read(content);
     }
 

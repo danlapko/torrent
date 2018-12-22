@@ -17,5 +17,6 @@ public class ClientRequestSources extends ClientRequest {
     public void writeToDataOutputStream(DataOutputStream dataOutputStream) throws IOException {
         dataOutputStream.writeByte(3);
         dataOutputStream.writeInt(id);
+        dataOutputStream.flush();
     }
 }

@@ -9,8 +9,11 @@ import Seed.Model.FileMeta;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
+import java.util.Arrays;
 
 public class Connection implements Runnable {
     final Socket socket;
@@ -29,6 +32,7 @@ public class Connection implements Runnable {
 
     @Override
     public void run() {
+        String remoteAddr = socket.getRemoteSocketAddress().toString();
         try {
             while (true) {
                 byte type = dataInputStream.readByte();
@@ -37,7 +41,7 @@ public class Connection implements Runnable {
                     case 1: { // stat
 
                         ServerRequestStat request = new ServerRequestStat(dataInputStream);
-                        System.err.println(socket.getRemoteSocketAddress().toString() + " requested myserver <stat> fileId=" + request.id);
+                        System.err.println("outcome " + remoteAddr + " requested myserver <stat> fileId=" + request.id);
 
                         FileMeta fileMeta = globalContext.catalog.getFile(request.id);
                         ServerResponseStat response;
@@ -47,14 +51,14 @@ public class Connection implements Runnable {
                             response = new ServerResponseStat(fileMeta.getNumBlocks(), fileMeta.getBlockIds());
                         }
                         response.writeToDataOutputStream(dataOutputStream);
-                        System.err.println(socket.getRemoteSocketAddress().toString() + " responsed myserver <stat> parts=" + response.parts.toString());
+                        System.err.println("outcome " + remoteAddr + " myserver responsed <stat> parts=" + Arrays.toString(response.parts));
 
                         break;
                     }
 
                     case 2: { // get
                         ServerRequestGet request = new ServerRequestGet(dataInputStream);
-                        System.err.println(socket.getRemoteSocketAddress().toString() + " requested myserver <get> fileId=" + request.id + " blockId=" + request.part);
+                        System.err.println("outcome " + remoteAddr + " requested myserver <get> fileId=" + request.id + " blockId=" + request.part);
 
                         ServerResponseGet response;
                         FileMeta file = globalContext.catalog.getFile(request.id);
@@ -62,6 +66,7 @@ public class Connection implements Runnable {
                         if (file != null) {
                             block = file.getBlock(request.part);
                         }
+
                         if (block == null) {
                             response = new ServerResponseGet(0, new byte[0]);
                         } else {
@@ -69,15 +74,19 @@ public class Connection implements Runnable {
                         }
 
                         response.writeToDataOutputStream(dataOutputStream);
-                        System.err.println(socket.getRemoteSocketAddress().toString() + " responsed myserver <get> ");
+                        System.err.println(remoteAddr + " myserver responsed <get> ");
 
                         break;
                     }
                     default:
-                        throw new RuntimeException(" invalid request type:" + type);
+                        throw new RuntimeException("outcome " + remoteAddr + " invalid request type:" + type);
                 }
             }
+        } catch (EOFException | SocketException e) {
+            System.err.println(remoteAddr + " disconnected");
+
         } catch (IOException e) {
+            System.err.println(remoteAddr + " :");
             e.printStackTrace();
         }
     }

@@ -26,5 +26,6 @@ public class ClientRequestUpdate extends ClientRequest {
         for (int i = 0; i < count; i++) {
             dataOutputStream.writeInt(ids[i]);
         }
+        dataOutputStream.flush();
     }
 }

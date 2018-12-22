@@ -10,11 +10,11 @@ import java.util.concurrent.Executors;
 
 public class Tracker {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        int port = 8081;
+        short port = 8081;
         int numWorkers = 4;
 //        long expirationTime = 6 * 60 * 1000;
-        long expirationTime =  10 * 1000;
-        String catalogURI = "./catalogTracker.txt";
+        long expirationTime = 10 * 1000;
+        String catalogURI = "./trackerCatalog_" + port + ".bin";
 
         Catalog catalog = new Catalog(catalogURI);
 

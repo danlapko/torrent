@@ -9,6 +9,7 @@ import io.airlift.airline.Arguments;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 @io.airlift.airline.Command(name = "upload", description = "point tracker that you have new file for seedding")
 public class CmdUpload implements Command {
@@ -22,8 +23,10 @@ public class CmdUpload implements Command {
         byte[] content = Files.readAllBytes(path);
 
         FileMeta fileMeta = context.uploadTracker(path.getFileName().toString(), content.length);
-        for (long pos = 0, id = 0; pos < content.length; pos += context.blockSize, id++) {
-            fileMeta.addBlock(new BlockMeta((int) id, content.length, content));
+        for (int pos = 0, id = 0; pos < content.length; pos += context.blockSize, id++) {
+            int rightBound = content.length < pos + context.blockSize ? content.length : pos + context.blockSize;
+            byte[] blockContent = Arrays.copyOfRange(content, pos, rightBound);
+            fileMeta.addBlock(new BlockMeta((int) id, blockContent.length, blockContent));
         }
 
         context.catalog.addFile(fileMeta);

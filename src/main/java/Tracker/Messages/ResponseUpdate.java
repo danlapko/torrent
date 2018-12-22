@@ -16,5 +16,6 @@ public class ResponseUpdate extends Response {
     @Override
     public void writeToDataOutputStream(DataOutputStream dataOutputStream) throws IOException {
         dataOutputStream.writeBoolean(status);
+        dataOutputStream.flush();
     }
 }

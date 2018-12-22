@@ -21,11 +21,11 @@ public class GlobalContext {
     final Socket trackerSocket;
     final DataOutputStream trackerDataOutputStream;
     final DataInputStream trackerDataInputStream;
-    public final long blockSize;
+    public final int blockSize;
     public final Catalog catalog;
     public final short myServerPort;
 
-    public GlobalContext(String trackerHost, int trackerPort, String catalogURI, short myServerPort, long blockSize) throws IOException, ClassNotFoundException {
+    public GlobalContext(String trackerHost, int trackerPort, String catalogURI, short myServerPort, int blockSize) throws IOException, ClassNotFoundException {
         this.trackerHost = trackerHost;
         this.trackerPort = trackerPort;
         this.myServerPort = myServerPort;

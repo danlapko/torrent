@@ -19,5 +19,6 @@ public class ClientRequestUpload extends ClientRequest {
         dataOutputStream.writeByte(2);
         dataOutputStream.writeUTF(name);
         dataOutputStream.writeLong(size);
+        dataOutputStream.flush();
     }
 }

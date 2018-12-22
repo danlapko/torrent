@@ -7,17 +7,18 @@ import java.io.IOException;
 
 public class ServerResponseGet extends ServerResponse {
 
-    final int contentSize;
+    final long contentSize;
     final byte[] content;
 
-    public ServerResponseGet(int contentSize, byte[] content) {
+    public ServerResponseGet(long contentSize, byte[] content) {
         this.contentSize = contentSize;
         this.content = content;
     }
 
     @Override
     public void writeToDataOutputStream(DataOutputStream dataOutputStream) throws IOException {
-        dataOutputStream.writeInt(contentSize);
+        dataOutputStream.writeLong(contentSize);
         dataOutputStream.write(content);
+        dataOutputStream.flush();
     }
 }

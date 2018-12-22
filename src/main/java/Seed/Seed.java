@@ -3,6 +3,7 @@ package Seed;
 
 import Seed.Commands.*;
 import Seed.Exceptions.ConnectionBrokenException;
+import Seed.Exceptions.SeedException;
 import io.airlift.airline.ParseException;
 
 import java.io.BufferedReader;
@@ -17,15 +18,16 @@ import java.io.InputStreamReader;
 // `store`
 // exit session `exit`
 
-public class Cli {
+public class Seed {
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
+//        String trackerHost = Short.valueOf(args[1]);
         String trackerHost = "localhost";
         short trackerPort = 8081;
-        short myServerPort = 9999;
+        short myServerPort = Short.valueOf(args[0]);
 //        int sentUpdateEvery = 4 * 60 * 1000; // ms
         int sentUpdateEvery = 9 * 1000; // ms
         int blockSize = 10 * 1024 * 1024; // 10M
-        String catalogURI = "./catalogSeed.txt";
+        String catalogURI = "./seedCatalog_" + myServerPort + ".bin";
 
 
         @SuppressWarnings("unchecked")
@@ -96,24 +98,24 @@ public class Cli {
             // executing command
             try {
                 cmd.execute(globalContext);
+
+            } catch (SeedException e) {
+                System.err.println(e.getMessage());
+
             } catch (ConnectionBrokenException e) {
                 System.err.println("FATAL: connection broken or expired! " + e.getMessage());
-//                updaterThread.interrupt();
-//                seedServerThread.interrupt();
                 globalContext.finish();
                 e.printStackTrace();
                 return;
+
             } catch (IOException e) {
                 System.err.println("FATAL: Invalid path! " + e.getMessage());
-//                updaterThread.interrupt();
-//                seedServerThread.interrupt();
                 globalContext.finish();
                 e.printStackTrace();
                 return;
+
             } catch (Exception e) {
                 System.err.println("FATAL: I don't know what have happened");
-//                updaterThread.interrupt();
-//                seedServerThread.interrupt();
                 globalContext.finish();
                 e.printStackTrace();
                 return;

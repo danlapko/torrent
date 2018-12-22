@@ -1,5 +1,6 @@
 package Seed.Commands;
 
+import Seed.Exceptions.NotAvaliableFile;
 import Seed.GlobalContext;
 import Seed.Model.BlockMeta;
 import Seed.Model.FileMeta;
@@ -23,6 +24,9 @@ public class CmdStore implements Command {
     public int execute(GlobalContext context) throws Exception {
 
         FileMeta fileMeta = context.catalog.getFile(fileId);
+        if (fileMeta == null) {
+            throw new NotAvaliableFile(" You have not file with such id: " + fileId + "! To store it first download it.");
+        }
 
         byte[] content = new byte[(int) fileMeta.size];
         long numBlocks = (fileMeta.size + context.blockSize - 1) / context.blockSize;

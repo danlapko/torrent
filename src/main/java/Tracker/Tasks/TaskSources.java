@@ -25,7 +25,7 @@ public class TaskSources implements Runnable {
         List<ClientMeta> clients = new ArrayList<>(fileMeta.getClients());
         ResponseSources response = new ResponseSources(request.requestNum, clients.size(), clients);
 
-        System.err.println(context.socket.getRemoteSocketAddress() + " execute  <sources" + request.requestNum + ">");
+        System.err.println(context.socket.getRemoteSocketAddress() + " execute  <sources" + response.responseNum + "> numSources=" + response.clients.size());
 
         synchronized (context.responseQueue) {
             context.responseQueue.offer(response);

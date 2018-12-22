@@ -19,5 +19,6 @@ public class ClientRequestGet extends ClientRequest {
         dataOutputStream.writeByte(2);
         dataOutputStream.writeInt(id);
         dataOutputStream.writeInt(part);
+        dataOutputStream.flush();
     }
 }

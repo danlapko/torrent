@@ -21,5 +21,6 @@ public class ServerResponseStat extends ServerResponse {
         for (int i = 0; i < count; i++) {
             dataOutputStream.writeInt(parts[i]);
         }
+        dataOutputStream.flush();
     }
 }

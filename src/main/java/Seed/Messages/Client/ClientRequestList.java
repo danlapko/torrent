@@ -11,6 +11,7 @@ public class ClientRequestList extends ClientRequest {
     @Override
     public void writeToDataOutputStream(DataOutputStream dataOutputStream) throws ConnectionBrokenException,IOException {
         dataOutputStream.writeByte(1);
+        dataOutputStream.flush();
     }
 }
 

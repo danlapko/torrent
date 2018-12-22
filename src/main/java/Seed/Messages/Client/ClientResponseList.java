@@ -18,7 +18,10 @@ public class ClientResponseList extends ClientResponse {
         count = dataInputStream.readInt();
         files = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
-            FileMeta fileMeta = new FileMeta(dataInputStream.readInt(), dataInputStream.readUTF(), dataInputStream.readLong());
+            int fileId = dataInputStream.readInt();
+            String name = dataInputStream.readUTF();
+            long size = dataInputStream.readLong();
+            FileMeta fileMeta = new FileMeta(fileId, name, size);
             files.add(i, fileMeta);
         }
     }

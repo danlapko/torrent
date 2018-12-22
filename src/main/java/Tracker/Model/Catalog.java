@@ -24,6 +24,7 @@ public class Catalog implements Serializable {
             FileInputStream fileIn = new FileInputStream(serializationPath.toFile());
             ObjectInputStream objectInputStream = new ObjectInputStream(fileIn);
             filesMap = (ConcurrentHashMap<Integer, FileMeta>) objectInputStream.readObject();
+            maxId.set(filesMap.size());
             fileIn.close();
         }
     }

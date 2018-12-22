@@ -11,7 +11,7 @@ import java.util.List;
 // size — количество клиентов, раздающих файл ip — ip клиента,
 public class ResponseSources extends Response {
     private final int size;
-    private final List<ClientMeta> clients;
+    public final List<ClientMeta> clients;
 
     public ResponseSources(int responseNum, int size, List<ClientMeta> clients) {
         super(responseNum);
@@ -26,5 +26,6 @@ public class ResponseSources extends Response {
             dataOutputStream.write(client.ip);
             dataOutputStream.writeShort(client.port);
         }
+        dataOutputStream.flush();
     }
 }

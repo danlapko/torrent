@@ -33,9 +33,10 @@ public class CmdDownload implements Command {
         }
 
         if (fileMeta == null) {
-            throw new NotAvaliableFile(String.valueOf(fileId));
+            throw new NotAvaliableFile("Tracker has not file with such id: " + fileId + "!");
         }
 
+        long numBlocks = (fileMeta.size + context.blockSize - 1) / context.blockSize;
 
         List<ClientMeta> sources = context.getFileSources(fileId);
 
@@ -56,23 +57,28 @@ public class CmdDownload implements Command {
             requestStat.writeToDataOutputStream(dataOutputStream);
             ClientResponseStat responseStat = new ClientResponseStat(dataInputStream);
 
-            long numBlocks = (fileMeta.size + context.blockSize - 1) / context.blockSize;
-
             for (int partId : responseStat.parts) {
                 if (fileMeta.getBlock(partId) == null) {
-                    System.out.println("\tblock " + partId + "/" + numBlocks);
+                    System.out.print("\tblock " + (partId + 1) + "/" + numBlocks);
 
                     ClientRequestGet requestGet = new ClientRequestGet(fileId, partId);
                     requestGet.writeToDataOutputStream(dataOutputStream);
                     ClientResponseGet responseGet = new ClientResponseGet(dataInputStream);
+                    System.out.println(" size=" + responseGet.contentSize);
                     fileMeta.addBlock(new BlockMeta(partId, responseGet.contentSize, responseGet.content));
                 }
             }
 
-            context.catalog.addFile(fileMeta);
         }
+        context.catalog.addFile(fileMeta);
 
-        System.out.println("File " + fileMeta.name + " whith id=" + fileMeta.id + " have been downloaded!");
+        if (fileMeta.getBlockIds().length != numBlocks) {
+            System.out.println("File " + fileMeta.name + " whith id=" + fileMeta.id + " have been partially downloaded! You have "
+                    + fileMeta.getBlockIds().length + " from " + numBlocks + " blocks");
+
+        } else {
+            System.out.println("File " + fileMeta.name + " whith id=" + fileMeta.id + " have been successfully downloaded!");
+        }
 
 
         return 0;

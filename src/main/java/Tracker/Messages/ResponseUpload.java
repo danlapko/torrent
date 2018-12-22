@@ -16,5 +16,6 @@ public class ResponseUpload extends Response {
     @Override
     public void writeToDataOutputStream(DataOutputStream dataOutputStream) throws IOException {
         dataOutputStream.writeInt(id);
+        dataOutputStream.flush();
     }
 }
