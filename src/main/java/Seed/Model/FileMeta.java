@@ -10,7 +10,8 @@ public class FileMeta implements Serializable {
     public final int id;
     public final String name;
     public final long size;
-    private final ConcurrentHashMap<Integer, BlockMeta> blocks = new ConcurrentHashMap<>();
+
+    public final ConcurrentHashMap<Integer, BlockMeta> blocks = new ConcurrentHashMap<>();
 
 
     public FileMeta(int id, String name, long size) {
@@ -31,7 +32,7 @@ public class FileMeta implements Serializable {
         return blocks.get(id);
     }
 
-    public int getNumBlocks() {
+    public int getStoredNumBlocks() {
         return blocks.size();
     }
 

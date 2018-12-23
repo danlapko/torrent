@@ -223,4 +223,76 @@ public class Tests {
 
         System.out.println("========= /transitiveDataTransfer =========");
     }
+
+    @Test
+    public void downloadLargeFromSeveralSeeds() throws Exception {
+        System.out.println("========= downloadLargeFromSeveralSeeds =========");
+
+        Proc client1 = createAndStartSeed(10101);
+        Proc client2 = createAndStartSeed(10102);
+        Proc client3 = createAndStartSeed(10103);
+        Proc client4 = createAndStartSeed(10104);
+        Proc client5 = createAndStartSeed(10105);
+        Proc client6 = createAndStartSeed(10106);
+
+
+        RandomAccessFile f = new RandomAccessFile(client1.dir + "/large.txt", "rw");
+        f.setLength(250 * 1024 * 1024); // 250 mb
+
+        execCmd(client1, "upload large.txt");
+
+        execCmd(client2, "download 0");
+        execCmd(client3, "download 0");
+        execCmd(client4, "download 0");
+        execCmd(client5, "download 0");
+        execCmd(client6, "download 0");
+
+        execCmd(client1, "exit");
+        execCmd(client2, "exit");
+        execCmd(client3, "exit");
+        execCmd(client4, "exit");
+        execCmd(client5, "exit");
+        execCmd(client6, "exit");
+        client1.proc.waitFor();
+        client2.proc.waitFor();
+        client3.proc.waitFor();
+        client4.proc.waitFor();
+        client5.proc.waitFor();
+        client6.proc.waitFor();
+
+        client1 = createAndStartSeed(10101);
+        client2 = createAndStartSeed(10102);
+        client3 = createAndStartSeed(10103);
+        client4 = createAndStartSeed(10104);
+        client5 = createAndStartSeed(10105);
+        client6 = createAndStartSeed(10106);
+
+        Proc client7 = createAndStartSeed(10107);
+
+        System.out.println("NOW DOWNLOADING CLIENT_7");
+        execCmd(client7, "download 0");
+
+        execCmd(client7, "store 0 -f foo.txt");
+
+        execCmd(client1, "exit");
+        execCmd(client2, "exit");
+        execCmd(client3, "exit");
+        execCmd(client4, "exit");
+        execCmd(client5, "exit");
+        execCmd(client6, "exit");
+        execCmd(client7, "exit");
+        client1.proc.waitFor();
+        client2.proc.waitFor();
+        client3.proc.waitFor();
+        client4.proc.waitFor();
+        client5.proc.waitFor();
+        client6.proc.waitFor();
+        client7.proc.waitFor();
+
+        Assert.assertTrue(FileUtils.contentEquals(
+                new File(client1.dir + "/large.txt"),
+                new File(client7.dir + "/foo.txt")));
+
+        System.out.println("========= /downloadLargeFromSeveralSeeds =========");
+    }
 }

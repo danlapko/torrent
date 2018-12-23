@@ -48,7 +48,7 @@ public class Connection implements Runnable {
                         if (fileMeta == null) {
                             response = new ServerResponseStat(0, new int[0]);
                         } else {
-                            response = new ServerResponseStat(fileMeta.getNumBlocks(), fileMeta.getBlockIds());
+                            response = new ServerResponseStat(fileMeta.getStoredNumBlocks(), fileMeta.getBlockIds());
                         }
                         response.writeToDataOutputStream(dataOutputStream);
                         System.err.println("outcome " + remoteAddr + " myserver responsed <stat> parts=" + Arrays.toString(response.parts));

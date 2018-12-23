@@ -24,12 +24,14 @@ public class GlobalContext {
     public final int blockSize;
     public final Catalog catalog;
     public final short myServerPort;
+    public final int numWorkers;
 
-    public GlobalContext(String trackerHost, int trackerPort, String catalogURI, short myServerPort, int blockSize) throws IOException, ClassNotFoundException {
+    public GlobalContext(String trackerHost, int trackerPort, String catalogURI, short myServerPort, int blockSize, int numWorkers) throws IOException, ClassNotFoundException {
         this.trackerHost = trackerHost;
         this.trackerPort = trackerPort;
         this.myServerPort = myServerPort;
         this.blockSize = blockSize;
+        this.numWorkers = numWorkers;
         this.trackerSocket = new Socket(trackerHost, trackerPort);
         trackerDataOutputStream = new DataOutputStream(trackerSocket.getOutputStream());
         trackerDataInputStream = new DataInputStream(trackerSocket.getInputStream());

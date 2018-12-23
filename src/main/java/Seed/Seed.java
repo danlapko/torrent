@@ -29,6 +29,7 @@ public class Seed {
         int sentUpdateEvery = 4 * 60 * 1000; // ms
 //        int sentUpdateEvery = 9 * 1000; // ms
         int blockSize = 10 * 1024 * 1024; // 10M
+        int numWorkers = 5;
 
         String catalogURI = "./seedCatalog_" + myServerPort + ".bin";
 
@@ -49,7 +50,7 @@ public class Seed {
 
         // initialize global context
 
-        GlobalContext globalContext = new GlobalContext(trackerHost, trackerPort, catalogURI, myServerPort, blockSize);
+        GlobalContext globalContext = new GlobalContext(trackerHost, trackerPort, catalogURI, myServerPort, blockSize, numWorkers);
 
         // start updater
         Thread updaterThread = new Thread(() -> {
