@@ -37,7 +37,7 @@ public class Tests {
                 "mkdir -p " + dir + "; " +
                         "cd " + dir + "; ").start().waitFor();
 
-        Process process = Runtime.getRuntime().exec("java -jar /home/danila/se_6f/java/torrent/build/libs/tracker-1.0-SNAPSHOT.jar",
+        Process process = Runtime.getRuntime().exec("java -jar /home/danila/se_6f/java/torrent/build/libs/tracker.jar",
                 null, new File(dir));
         server = new Proc(process, dir);
         Thread.sleep(1000);
@@ -91,7 +91,7 @@ public class Tests {
         pb_dir.start().waitFor();
 
         Process proc = Runtime.getRuntime().exec(
-                "java -Xmx4096M -jar /home/danila/se_6f/java/torrent/build/libs/seed-1.0-SNAPSHOT.jar " + port,
+                "java -Xmx4096M -jar /home/danila/se_6f/java/torrent/build/libs/seed.jar " + port,
                 null, new File(dir));
         Thread.sleep(1000);
         return new Proc(proc, dir);

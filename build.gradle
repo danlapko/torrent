@@ -12,8 +12,9 @@ sourceCompatibility = 1.8
 repositories {
     mavenCentral()
 }
-
 task jarTracker(type: Jar) {
+    version= ""
+
     manifest {
         attributes "Main-Class": "Tracker.Tracker"
     }
@@ -26,6 +27,8 @@ task jarTracker(type: Jar) {
 }
 
 task jarSeed(type: Jar) {
+    version= ""
+
     manifest {
         attributes "Main-Class": "Seed.Seed"
     }
