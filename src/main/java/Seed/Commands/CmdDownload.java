@@ -13,6 +13,7 @@ import io.airlift.airline.Arguments;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.List;
 
@@ -49,28 +50,34 @@ public class CmdDownload implements Command {
             }
 
             System.out.println("downloading from " + host + ":" + client.port + " ...");
-            Socket socket = new Socket(host, client.port);
-            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
 
-            ClientRequestStat requestStat = new ClientRequestStat(fileId);
-            requestStat.writeToDataOutputStream(dataOutputStream);
-            ClientResponseStat responseStat = new ClientResponseStat(dataInputStream);
+            try {
+                Socket socket = new Socket(host, client.port);
+                DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+                DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
 
-            for (int partId : responseStat.parts) {
-                if (fileMeta.getBlock(partId) == null) {
-                    System.out.print("\tblock " + (partId + 1) + "/" + numBlocks);
+                ClientRequestStat requestStat = new ClientRequestStat(fileId);
+                requestStat.writeToDataOutputStream(dataOutputStream);
+                ClientResponseStat responseStat = new ClientResponseStat(dataInputStream);
 
-                    ClientRequestGet requestGet = new ClientRequestGet(fileId, partId);
-                    requestGet.writeToDataOutputStream(dataOutputStream);
-                    ClientResponseGet responseGet = new ClientResponseGet(dataInputStream);
-                    System.out.println(" size=" + responseGet.contentSize);
-                    fileMeta.addBlock(new BlockMeta(partId, responseGet.contentSize, responseGet.content));
+                for (int partId : responseStat.parts) {
+                    if (fileMeta.getBlock(partId) == null) {
+                        System.out.print("\tblock " + (partId + 1) + "/" + numBlocks);
+
+                        ClientRequestGet requestGet = new ClientRequestGet(fileId, partId);
+                        requestGet.writeToDataOutputStream(dataOutputStream);
+                        ClientResponseGet responseGet = new ClientResponseGet(dataInputStream);
+                        System.out.println(" size=" + responseGet.contentSize);
+                        fileMeta.addBlock(new BlockMeta(partId, responseGet.contentSize, responseGet.content));
+                    }
                 }
-            }
 
+            } catch (IOException e) {
+                System.err.println("Connection to " + host + ":" + client.port + " broken!");
+            }
         }
         context.catalog.addFile(fileMeta);
+        context.updateMyFilesAtTracker();
 
         if (fileMeta.getBlockIds().length != numBlocks) {
             System.out.println("File " + fileMeta.name + " whith id=" + fileMeta.id + " have been partially downloaded! You have "
